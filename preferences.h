@@ -34,8 +34,8 @@
 
 // **** Define the WiFi name and password ****
 
-#define Wifi_ssid           "wifi ssd"
-#define Wifi_password       "wifi pwd"  
+#define Wifi_ssid           "home"
+#define Wifi_password       "marzia2009"  
 #define HostName            "dht-thermo"
 #define Http_username       "admin"
 #define Http_password       "admin"
@@ -44,7 +44,7 @@
 
 ////// ***** Define AP *****
 
-#define ap_ssid             "nome ap"
-#define ap_password         "password ap"
+#define ap_ssid             "thermo_dht"
+#define ap_password         "salsa2014"
 
 

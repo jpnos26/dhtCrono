@@ -79,7 +79,7 @@ IPAddress ip(STATIC_IP);
 IPAddress gateway(STATIC_IP_GW);
 IPAddress subnet(STATIC_SUBNET);
 
-SoftwareSerial nextion(12, 14);// Nextion TX to pin 12 and RX to pin 14 of Arduino
+SoftwareSerial nextion(12, 14);// Nextion TX to pin 4 and RX to pin 5 of Arduino
 
 Nextion myNextion(nextion, 9600); //create a Nextion object named myNextion using the nextion serial port @ 9600bps
 
@@ -278,6 +278,8 @@ void loop(){
             myNextion.sendCommand("ref sistema");
             stato_sys = "Caldaia ON";
             stato="ON";
+            ulNextgraph = millis();
+            delay(10);
           }
         }
       else if ( dhtIceCom <=  dhtTempCom0){
@@ -289,6 +291,8 @@ void loop(){
             myNextion.sendCommand("ref sistema");
             stato_sys = "Caldaia OFF";
             stato="OFF" ;
+            ulNextgraph = millis();
+            delay(10);
           }
       }
       break;
@@ -301,6 +305,8 @@ void loop(){
             myNextion.sendCommand("ref sistema");
             stato_sys = "Caldaia ON";
             stato="ON";
+            ulNextgraph = millis();
+            delay(10);
            }
         }
       else if ( setTempCom <=  dhtTempCom0){
@@ -311,6 +317,8 @@ void loop(){
             myNextion.sendCommand("ref sistema");
             stato_sys = "Caldaia OFF";
             stato="OFF" ;
+            ulNextgraph = millis();
+            delay(10);
           }
       }
       break;
