@@ -1,0 +1,141 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+	<meta charset="UTF-8"> 	
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Dht Thermostat</title>
+	<meta id="viewport" name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script src="javascript/jquery.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet"> 
+	<link rel=stylesheet href="css/home.css">
+<script type="text/javascript">
+    //creo le variabili e le setto
+    	var reloadPeriod = 60000;
+    	var running = false;
+    //inizio la lettura da esp8266
+	$(document).ready(function() {
+		console.log("ready..... go");		
+		run()
+	});
+	function loadValues(){
+      //if(!running) return;
+	  console.log("loadvalues is running......");
+      var xh = new XMLHttpRequest();
+      console.log(xh)
+      xh.onreadystatechange = function(){
+        if (xh.readyState == 4){
+          if(xh.status == 200) {
+            console.log("Entrati",xh.responseText);
+            var res = JSON.parse(xh.responseText);
+	    console.log(res);
+	    document.getElementById ("temp0").value = parseFloat(res.temperature).toFixed(1);
+	    document.getElementById ("temp1").value = parseFloat(res.setpoint).toFixed(1);
+            document.getElementById ("temp2").value = parseFloat(res.humidity).toFixed(0)+"%";
+	    document.getElementById ("temp3").value = "Rele: "+ res.relestatus;
+	    if (res.checkEnable == 0){
+	    	document.getElementById ("Manuale").value = "Auto";
+	    	}
+	    else if (res.checkEnable == 1){
+	    	document.getElementById ("Manuale").value = "Manuale";
+	    	}
+	     else if (res.checkEnable == 2){
+	    	document.getElementById ("Manuale").value = "Off NoIce";
+	    	}
+	console.log("reloadPeriod -......",reloadPeriod);
+	setTimeout(loadValues, reloadPeriod);
+          } else running = false;
+        }
+      };
+      xh.open("GET", "/all", true);
+      xh.send(null);
+    };
+    function run(){
+      if(!running){
+		running = true;
+		console.log("running.....");
+		// creo la data
+		var data = new Date();
+		var gg, mm, aaaa;
+		gg = data.getDate() + ".";
+		mm = data.getMonth() + 1 + ".";
+		aaaa = data.getFullYear();
+		document.getElementById("oggi").value =  gg + mm + aaaa;
+		//inizializzo la rilettura
+		console.log("load Values -......");
+		loadValues();		
+      }
+    }
+    
+    	function isNumberKey(evt){
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode > 14 && (charCode < 46 || charCode > 57) )
+			return false;
+		return true;
+	}
+	function settaTemp(){
+	indirizzo="setTemp?" + document.getElementById("temp1").value;
+	//console.log (indirizzo);
+	window.location = "./"+indirizzo ;
+	}
+  
+</script>
+</head>
+<body bgcolor = "#d0d0f0">
+		
+		<div id="intesta">	
+		<p  align="center" width="500px">Dht CronoTermostato</p>
+		</div>
+		 <div id="corpo" style="background-image:url('img/sfondo.png');">
+			
+		        <table id="temperature" >
+				<tr>
+					<td >
+						<input type="text" id="temp2" name="temp2" maxlength = 4 readonly>
+					</td>
+					<td >
+						<input style="background-color:#d0d0f0" type="text" id="oggi" name="oggi" maxlength = 4 readonly>
+					</td>
+				
+				</tr>
+				<tr>
+					<td "></td>
+					<td  ><input type="text" id="temp1" name="temp1" maxlength = 4></td>	
+				</tr>
+				<tr>
+					<td >
+					</td>
+					<td  >
+						<input type="text" id="temp0" name="temp0" maxlength = 4 onkeypress='return isNumberKey(event)' style="  text-align:center;" readonly></td>
+					</td>	
+				</tr>
+				<tr>
+					<td >
+					</td>
+					<td >
+					<input type="text"  id="temp3" name="temp3" maxlength = 4 readonly>
+					</td>
+				</tr>
+			</table>
+			</div>
+			<table id="pulsanti" style="margin:0 auto;">
+				<tr>
+				<td>	
+					<input type="submit" value="Set Temp" onclick="settaTemp()">
+				</td>
+				<td>		
+					<input type="submit" value="Grafico" onclick="window.location = './graph.htm';">				
+				</td>
+				<td>		
+					<input type="submit" value="Crono" onclick="window.location = './crono.htm';">
+				</td>
+				<td>		
+					<input type="submit" id="Manuale" value="Manuale" onclick="window.location = './setManuale';">
+				</td>
+				
+				</tr>	
+			</table>
+     
+</body>
+</html>
